@@ -7,6 +7,10 @@ Supported Types are: bool, float, int, Color, Vector2, Vector3, Vector4, Matrix4
 
 Any other type will just be discarded.
 
+## SRP Batcher Compatibility
+When using **URP** or **HDRP** with **SRP Batcher Enabled**, **Material Property Blocks** will only be used when in **Edit Mode**.
+**Runtime / Play Mode** will then make unique **Material** instances. Make sure your Materials are **compatible** with the SRP Batcher.
+
 ## Example
 ```cs
 public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
