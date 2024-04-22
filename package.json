@@ -1,0 +1,29 @@
+{
+    "name": "com.unity.material-property-provider",
+    "displayName": "Material Property Provider",
+    "version": "0.0.1-preview.1",
+    "unity": "6000.0",
+    "description": "A MonoBehaviour based class that will automatically set its Renderer with a MaterialPropertyBlock built from fields and properties marked with MaterialProperty Attribute.",
+    "author": {
+        "name": "Fred Moreau",
+        "email": "frederic.moreau@unity3d.com",
+        "url": "https://www.unity3d.com"
+    },
+    "keywords": [
+        "unity",
+        "material",
+        "shader"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:FredMoreau/MaterialPropertyProvider.git"
+    },
+    "samples": [
+        {
+            "displayName": "Radial Gradient",
+            "description": "A simple Material Property Provider and its Shader Graph for drawing Radial Gradients on Quads or Sprites.",
+            "path": "Samples~/Radial Gradient"
+        }
+    ],
+    "hideInEditor": false
+}
