@@ -1,17 +1,28 @@
 # Material Property Provider
-A _MonoBehaviour_ based class that will automatically set its _Renderer_ with a _MaterialPropertyBlock_ built from _fields_ and _properties_ marked with _**MaterialProperty**_ _Attribute_.
 
-Derive from ```MaterialPropertyProviderBase``` and add ```[MaterialProperty("_Reference")]``` **Attributes** to _Fields_ and _Properties_ to add them to the _MaterialPropertyBlock_
+## Problem Statement
+### Making _Renderers_ use unique values, without manually creating _Material Variants_
+Requires handling _Material Property Blocks_, and/or _Material Instances_ (at _Runtime_ only).
+### Assigning values from a _MonoBehaviour_
+Requires setting the _Material Property Block_ or _Material_'s properties on ```Start()```, ```OnValidate()```, ```Reset()```, and ```Update()```.
+### SRP Batcher Compatibility
+Requires using _Material Property Blocks_ when in _Edit Mode_ (not to leak _Materials_ in the _Editor_), but unique _Material Instances_ at _Runtime_.
+
+## Solution
+A _MonoBehaviour_ based class that will automatically set its _Renderer_'s _Material Properties_ built from _fields_ and _properties_ marked with _**MaterialProperty**_ _Attribute_.
+
+Derive from ```MaterialPropertyProviderBase``` and decorate _Fields_ and _Properties_ with ```[MaterialProperty("_Reference")]``` **Attributes** to add them to the _Material Properties_ that will automatically be handled.
 
 Supported Types are: bool, float, int, Color, Vector2, Vector3, Vector4, Matrix4x4, Texture, Texture2D, Texture3D, Cubemap, RenderTexture.
 
-Any other type will just be discarded.
+Any other type will issue a warning and just be discarded.
 
 ## SRP Batcher Compatibility
 When using **URP** or **HDRP** with **SRP Batcher Enabled**, **Material Property Blocks** will only be used when in **Edit Mode**.
 **Runtime / Play Mode** will then make unique **Material** instances. Make sure your Materials are **compatible** with the SRP Batcher.
 
 ## Example
+### Radial Gradient
 ```cs
 public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
 {
