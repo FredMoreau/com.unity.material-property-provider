@@ -35,3 +35,7 @@ public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
     //}
 }
 ```
+The component will automatically set the fields' and properties' values to the Renderer's Material Property Block.
+
+![alt text](Documentation~/images/radial-gradient-sample.png)
+
