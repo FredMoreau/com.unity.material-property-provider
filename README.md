@@ -24,6 +24,7 @@ When using **URP** or **HDRP** with **SRP Batcher Enabled**, **Material Property
 ## Example
 ### Radial Gradient
 ```cs
+[ExecuteAlways] // this allows for animated properties preview in Timeline when in Edit Mode
 public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
 {
 #pragma warning disable CS0414
@@ -42,12 +43,6 @@ public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
 
     [MaterialProperty("_UseTexture")]
     public bool UseTexture { get => _useTexture && _texture != null; }
-
-    // this allows for animated properties
-    //private void Update()
-    //{
-    //    UpdateProperties();
-    //}
 }
 ```
 The component will automatically set the fields' and properties' values to the Renderer's Material Property Block.
