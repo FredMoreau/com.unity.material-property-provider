@@ -31,7 +31,7 @@ public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
     // this allows for animated properties
     //private void Update()
     //{
-    //    UpdatePropertyBlock();
+    //    UpdateProperties();
     //}
 }
 ```
