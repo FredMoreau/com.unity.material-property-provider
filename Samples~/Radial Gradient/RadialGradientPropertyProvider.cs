@@ -33,7 +33,7 @@ namespace Unity.MaterialPropertyProvider.Samples
         // this allows for animated properties
         //private void Update()
         //{
-        //    UpdatePropertyBlock();
+        //    UpdateProperties();
         //}
     }
 }
