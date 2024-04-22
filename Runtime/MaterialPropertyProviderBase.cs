@@ -3,6 +3,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Rendering;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -12,7 +14,7 @@ namespace Unity.MaterialPropertyProvider
     /// <summary>
     /// A <see cref="MonoBehaviour"/> based class that will automatically set its <see cref="Renderer"/> with a <see cref="MaterialPropertyBlock"/>
     /// <para>When deriving from <see cref="MaterialPropertyProviderBase"/>, fields and properties with <see cref="MaterialPropertyAttribute"/> will automatically be set on the <see cref="Renderer"/>.</para>
-    /// <para>Properties are automatically updated upon Awake(), Start(), Reset() and OnValidate(). To enable animated properties, or force update, call <seealso cref="UpdatePropertyBlock"/>.</para>
+    /// <para>Properties are automatically updated upon Awake(), Start(), Reset() and OnValidate(). To enable animated properties, or force update, call <seealso cref="UpdateProperties"/>.</para>
     /// </summary>
     [RequireComponent(typeof(Renderer))]
     public abstract class MaterialPropertyProviderBase : MonoBehaviour
@@ -23,8 +25,11 @@ namespace Unity.MaterialPropertyProvider
         private static Dictionary<Type, Dictionary<int, FieldInfo>> _allFields = new();
         private static Dictionary<Type, Dictionary<int, PropertyInfo>> _allProperties = new();
 
-        private MaterialPropertyBlock _materialPropertyBlock;
         private Renderer _renderer;
+        private MaterialPropertyBlock _materialPropertyBlock;
+        private Material _material;
+
+        static bool SrpBatcherEnabled { get => GraphicsSettings.isScriptableRenderPipelineEnabled && GraphicsSettings.useScriptableRenderPipelineBatching; }
 
         protected new Renderer renderer
         {
@@ -45,6 +50,17 @@ namespace Unity.MaterialPropertyProvider
                     _materialPropertyBlock = new MaterialPropertyBlock();
 
                 return _materialPropertyBlock;
+            }
+        }
+
+        private Material material
+        {
+            get
+            {
+                if (_material == null)
+                    _material = renderer.material;
+
+                return _material;
             }
         }
 
@@ -132,38 +148,51 @@ namespace Unity.MaterialPropertyProvider
 
         protected virtual void Awake()
         {
-            UpdatePropertyBlock();
+            UpdateProperties();
         }
 
         protected virtual void Start()
         {
-            UpdatePropertyBlock();
+            UpdateProperties();
         }
 
         protected virtual void Reset()
         {
-            UpdatePropertyBlock();
+            UpdateProperties();
         }
 
         protected virtual void OnValidate()
         {
-            UpdatePropertyBlock();
+            UpdateProperties();
         }
 
         /// <summary>
-        /// Updates the <seealso cref="renderer"/>'s <see cref="MaterialPropertyBlock"/>
+        /// Updates the <seealso cref="renderer"/>'s properties.
         /// </summary>
-        protected void UpdatePropertyBlock()
+        protected void UpdateProperties()
         {
-            if (_allFields.ContainsKey(GetType()))
-                foreach (var field in _allFields[GetType()])
-                    AddToMaterialPropertyBlock(field.Key, field.Value.GetValue(this));
+            if (SrpBatcherEnabled && Application.isPlaying)
+            {
+                if (_allFields.ContainsKey(GetType()))
+                    foreach (var field in _allFields[GetType()])
+                        SetMaterialProperty(field.Key, field.Value.GetValue(this));
 
-            if (_allProperties.ContainsKey(GetType()))
-                foreach (var property in _allProperties[GetType()])
-                    AddToMaterialPropertyBlock(property.Key, property.Value.GetValue(this));
+                if (_allProperties.ContainsKey(GetType()))
+                    foreach (var property in _allProperties[GetType()])
+                        SetMaterialProperty(property.Key, property.Value.GetValue(this));
+            }
+            else
+            {
+                if (_allFields.ContainsKey(GetType()))
+                    foreach (var field in _allFields[GetType()])
+                        AddToMaterialPropertyBlock(field.Key, field.Value.GetValue(this));
 
-            renderer.SetPropertyBlock(materialPropertyBlock);
+                if (_allProperties.ContainsKey(GetType()))
+                    foreach (var property in _allProperties[GetType()])
+                        AddToMaterialPropertyBlock(property.Key, property.Value.GetValue(this));
+
+                renderer.SetPropertyBlock(materialPropertyBlock);
+            }
         }
 
         private void AddToMaterialPropertyBlock<V>(string name, V value)
@@ -238,6 +267,47 @@ namespace Unity.MaterialPropertyProvider
                 case Texture t:
                     if (t != null)
                         materialPropertyBlock.SetTexture(nameID, t);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetMaterialProperty<V>(int nameID, V value)
+        {
+            switch (value)
+            {
+                case bool b:
+                    material.SetFloat(nameID, b ? 1 : 0);
+                    break;
+                case float f:
+                    material.SetFloat(nameID, f);
+                    break;
+                case int i:
+                    material.SetInteger(nameID, i);
+                    break;
+                case Color c:
+                    material.SetColor(nameID, c);
+                    break;
+                case Vector2 v:
+                    material.SetVector(nameID, v);
+                    break;
+                case Vector3 v:
+                    material.SetVector(nameID, v);
+                    break;
+                case Vector4 v:
+                    material.SetVector(nameID, v);
+                    break;
+                case Matrix4x4 m:
+                    material.SetMatrix(nameID, m);
+                    break;
+                case RenderTexture rt:
+                    if (rt != null)
+                        material.SetTexture(nameID, rt);
+                    break;
+                case Texture t:
+                    if (t != null)
+                        material.SetTexture(nameID, t);
                     break;
                 default:
                     break;
