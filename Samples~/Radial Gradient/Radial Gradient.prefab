@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2805180420791357542}
   - component: {fileID: 7727193670908592760}
   - component: {fileID: 6888950755990812355}
+  - component: {fileID: 1316095529012429147}
   m_Layer: 0
   m_Name: Radial Gradient
   m_TagString: Untagged
@@ -106,3 +107,25 @@ MonoBehaviour:
   _power: 1
   _useTexture: 0
   _texture: {fileID: 0}
+--- !u!95 &1316095529012429147
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2809423207563268683}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

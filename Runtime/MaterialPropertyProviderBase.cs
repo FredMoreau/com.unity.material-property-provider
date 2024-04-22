@@ -166,6 +166,11 @@ namespace Unity.MaterialPropertyProvider
             UpdateProperties();
         }
 
+        protected void OnDidApplyAnimationProperties()
+        {
+            UpdateProperties();
+        }
+
         /// <summary>
         /// Updates the <seealso cref="renderer"/>'s properties.
         /// </summary>
