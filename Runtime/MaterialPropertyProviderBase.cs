@@ -25,6 +25,17 @@ namespace Unity.MaterialPropertyProvider
         private static Dictionary<Type, Dictionary<int, FieldInfo>> _allFields = new();
         private static Dictionary<Type, Dictionary<int, PropertyInfo>> _allProperties = new();
 
+        private Type _type;
+        private Type type
+        {
+            get
+            {
+                if (_type == null)
+                    _type = GetType();
+                return _type;
+            }
+        }
+
         private Renderer _renderer;
         private MaterialPropertyBlock _materialPropertyBlock;
         private Material _material;
@@ -178,22 +189,22 @@ namespace Unity.MaterialPropertyProvider
         {
             if (SrpBatcherEnabled && Application.isPlaying)
             {
-                if (_allFields.ContainsKey(GetType()))
-                    foreach (var field in _allFields[GetType()])
+                if (_allFields.ContainsKey(type))
+                    foreach (var field in _allFields[type])
                         SetMaterialProperty(field.Key, field.Value.GetValue(this));
 
-                if (_allProperties.ContainsKey(GetType()))
-                    foreach (var property in _allProperties[GetType()])
+                if (_allProperties.ContainsKey(type))
+                    foreach (var property in _allProperties[type])
                         SetMaterialProperty(property.Key, property.Value.GetValue(this));
             }
             else
             {
-                if (_allFields.ContainsKey(GetType()))
-                    foreach (var field in _allFields[GetType()])
+                if (_allFields.ContainsKey(type))
+                    foreach (var field in _allFields[type])
                         AddToMaterialPropertyBlock(field.Key, field.Value.GetValue(this));
 
-                if (_allProperties.ContainsKey(GetType()))
-                    foreach (var property in _allProperties[GetType()])
+                if (_allProperties.ContainsKey(type))
+                    foreach (var property in _allProperties[type])
                         AddToMaterialPropertyBlock(property.Key, property.Value.GetValue(this));
 
                 renderer.SetPropertyBlock(materialPropertyBlock);
