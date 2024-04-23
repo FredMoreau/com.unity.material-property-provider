@@ -45,7 +45,10 @@ public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
     public bool UseTexture { get => _useTexture && _texture != null; }
 }
 ```
-The component will automatically set the fields' and properties' values to the Renderer's Material Property Block.
+The component will automatically set the fields' and properties' values in the *Renderer*'s *Material* Properties.
 
 ![alt text](Documentation~/images/radial-gradient-sample.png)
 
+![alt text](Documentation~/images/radial-gradient-sg.png)
+
+![alt text](Documentation~/images/radial-gradient-sg-inspector.png)
