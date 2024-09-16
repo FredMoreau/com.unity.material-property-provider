@@ -23,6 +23,11 @@
             "displayName": "Radial Gradient",
             "description": "A simple Material Property Provider and its Shader Graph for drawing Radial Gradients on Quads or Sprites.",
             "path": "Samples~/Radial Gradient"
+        },
+        {
+            "displayName": "Multiple Renderers and Materials",
+            "description": "A Material Property Provider driving properties on several renderers with different materials.",
+            "path": "Samples~/Multi Renderer"
         }
     ],
     "hideInEditor": false

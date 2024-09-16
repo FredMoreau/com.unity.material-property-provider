@@ -3,6 +3,7 @@ using UnityEngine;
 namespace Unity.MaterialPropertyProvider.Samples
 {
     [ExecuteAlways] // this allows for animated properties preview in Timeline when in Edit Mode
+    [RequireComponent(typeof(Renderer))]
     public class RadialGradientPropertyProvider : MaterialPropertyProviderBase
     {
         // Add the [MaterialProperty("_Reference")] Attribute to Fields and Properties
@@ -29,5 +30,18 @@ namespace Unity.MaterialPropertyProvider.Samples
 
         [MaterialProperty("_UseTexture")]
         public bool UseTexture { get => _useTexture && _texture != null; }
+
+        Renderer[] _renderers;
+        protected override Renderer[] renderers
+        {
+            get
+            {
+                if (_renderers == null)
+                {
+                    _renderers = new Renderer[1] { GetComponent<Renderer>() };
+                }
+                return _renderers;
+            }
+        }
     }
 }
