@@ -32,14 +32,13 @@ namespace Unity.MaterialPropertyProvider.Samples
         public bool UseTexture { get => _useTexture && _texture != null; }
 
         Renderer[] _renderers;
-        protected override Renderer[] renderers
+        protected override Renderer[] renderers // <-- passing the renderers to work with
         {
             get
             {
                 if (_renderers == null)
-                {
                     _renderers = new Renderer[1] { GetComponent<Renderer>() };
-                }
+
                 return _renderers;
             }
         }
