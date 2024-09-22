@@ -1,8 +1,8 @@
 using System;
-using System.Reflection;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using System.Reflection;
+using UnityEngine;
 using UnityEngine.Rendering;
 
 #if UNITY_EDITOR
@@ -35,6 +35,11 @@ namespace Unity.MaterialPropertyProvider
         private MaterialPropertyBlock _materialPropertyBlock;
 
         static bool SrpBatcherEnabled { get => GraphicsSettings.isScriptableRenderPipelineEnabled && GraphicsSettings.useScriptableRenderPipelineBatching; }
+
+        /// <summary>
+        /// Override to true to force using Material Property Blocks.
+        /// </summary>
+        protected virtual bool AlwaysUseMaterialPropertyBlocks => false;
 
         protected abstract Renderer[] renderers { get; }
 
@@ -129,7 +134,7 @@ namespace Unity.MaterialPropertyProvider
 
         protected virtual void Start()
         {
-            if ((!Application.isEditor || Application.isPlaying) && SrpBatcherEnabled)
+            if ((!Application.isEditor || Application.isPlaying) && SrpBatcherEnabled && !AlwaysUseMaterialPropertyBlocks)
             {
                 ResetMaterialPropertyBlock();
                 MakeMaterialsUnique();
@@ -200,7 +205,7 @@ namespace Unity.MaterialPropertyProvider
         /// </summary>
         protected void UpdateProperties()
         {
-            if (SrpBatcherEnabled && Application.isPlaying)
+            if (!AlwaysUseMaterialPropertyBlocks && SrpBatcherEnabled && Application.isPlaying)
             {
                 if (_allFields.ContainsKey(type))
                     foreach (var field in _allFields[type])
