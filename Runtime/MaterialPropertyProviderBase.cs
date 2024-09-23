@@ -41,7 +41,7 @@ namespace Unity.MaterialPropertyProvider
         /// </summary>
         protected virtual bool AlwaysUseMaterialPropertyBlocks => false;
 
-        protected abstract Renderer[] renderers { get; }
+        protected abstract Renderer[] Renderers { get; }
 
         private Dictionary<Material, Material> materials = new();
         private List<Material> materialDuplicates = new List<Material>();
@@ -161,8 +161,12 @@ namespace Unity.MaterialPropertyProvider
         [ContextMenu("Reset Material Property Block")]
         private void ResetMaterialPropertyBlock()
         {
-            foreach (var renderer in renderers)
-                renderer.SetPropertyBlock(null);
+            if (Renderers == null || Renderers.Length == 0)
+                return;
+
+            foreach (var renderer in Renderers)
+                if (renderer != null)
+                    renderer.SetPropertyBlock(null);
         }
 
         private void MakeMaterialsUnique()
@@ -172,7 +176,7 @@ namespace Unity.MaterialPropertyProvider
 
             materials.Clear();
             materialDuplicates.Clear();
-            foreach (var renderer in renderers)
+            foreach (var renderer in Renderers)
             {
                 if (renderer.sharedMaterials.Length > 0)
                 {
@@ -205,6 +209,9 @@ namespace Unity.MaterialPropertyProvider
         /// </summary>
         protected void UpdateProperties()
         {
+            if (Renderers == null || Renderers.Length == 0)
+                return;
+
             if (!AlwaysUseMaterialPropertyBlocks && SrpBatcherEnabled && Application.isPlaying)
             {
                 if (_allFields.ContainsKey(type))
@@ -217,6 +224,8 @@ namespace Unity.MaterialPropertyProvider
             }
             else
             {
+                materialPropertyBlock.Clear();
+
                 if (_allFields.ContainsKey(type))
                     foreach (var field in _allFields[type])
                         AddToMaterialPropertyBlock(field.Key, field.Value.GetValue(this));
@@ -225,8 +234,9 @@ namespace Unity.MaterialPropertyProvider
                     foreach (var property in _allProperties[type])
                         AddToMaterialPropertyBlock(property.Key, property.Value.GetValue(this));
 
-                foreach(var renderer in renderers)
-                    renderer.SetPropertyBlock(materialPropertyBlock);
+                foreach(var renderer in Renderers)
+                    if (renderer != null)
+                        renderer.SetPropertyBlock(materialPropertyBlock);
             }
         }
 
@@ -302,12 +312,10 @@ namespace Unity.MaterialPropertyProvider
                         material.SetMatrix(nameID, m);
                         break;
                     case RenderTexture rt:
-                        if (rt != null)
-                            material.SetTexture(nameID, rt);
+                        material.SetTexture(nameID, rt);
                         break;
                     case Texture t:
-                        if (t != null)
-                            material.SetTexture(nameID, t);
+                        material.SetTexture(nameID, t);
                         break;
                     default:
                         break;

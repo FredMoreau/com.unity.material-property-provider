@@ -18,7 +18,7 @@ public class MaterialPropertyDriver : MaterialPropertyProviderBase
 #pragma warning restore CS0414
 
     private Renderer[] _renderers;
-    protected override Renderer[] renderers // <-- passing the renderers to work with
+    protected override Renderer[] Renderers // <-- passing the renderers to work with
     {
         get
         {

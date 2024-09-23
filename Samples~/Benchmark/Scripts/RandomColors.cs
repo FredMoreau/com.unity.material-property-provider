@@ -8,7 +8,7 @@ public class RandomColors : MaterialPropertyProviderBase
     [SerializeField] AnimationCurve _lerpCurve = new AnimationCurve(new Keyframe[2] { new Keyframe(0, 0, 0, 0), new Keyframe(1, 1, 0, 0) });
 
     [SerializeField] Renderer[] _renderers;
-    protected override Renderer[] renderers => _renderers;
+    protected override Renderer[] Renderers => _renderers;
 
     [SerializeField] bool _alwaysUseMaterialPropertyBlocks = false;
     protected override bool AlwaysUseMaterialPropertyBlocks => _alwaysUseMaterialPropertyBlocks;
@@ -24,9 +24,8 @@ public class RandomColors : MaterialPropertyProviderBase
     {
         base.Start();
         wait = new WaitForSeconds(_frequency);
-        _current = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
-        _next = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
-        Color = _current;
+        Color = _current = Color.HSVToRGB(Random.Range(0f, 1f), 1f, 1f);
+        _next = Color.HSVToRGB(Random.Range(0f, 1f), 1f, 1f);
         StartCoroutine(GenerateColors());
     }
 
@@ -36,7 +35,6 @@ public class RandomColors : MaterialPropertyProviderBase
         {
             yield return wait;
             _current = _next;
-            //_next = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1f);
             _next = Color.HSVToRGB(Random.Range(0f, 1f), 1f, 1f);
             timer = 0;
         }

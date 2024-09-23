@@ -3,7 +3,7 @@
     "displayName": "Material Property Provider",
     "version": "0.0.1-preview.1",
     "unity": "6000.0",
-    "description": "A MonoBehaviour based class that will automatically set its Renderer with a MaterialPropertyBlock built from fields and properties marked with MaterialProperty Attribute.",
+    "description": "A MonoBehaviour based class that will automatically set its Renderers with a MaterialPropertyBlock built from fields and properties marked with MaterialProperty Attribute.\nWhen using SRP Batcher, unique instances of materials will be made at runtime for optimal performances.",
     "author": {
         "name": "Fred Moreau",
         "email": "frederic.moreau@unity3d.com",
@@ -28,6 +28,11 @@
             "displayName": "Multiple Renderers and Materials",
             "description": "A Material Property Provider driving properties on several renderers with different materials.",
             "path": "Samples~/Multi Renderer"
+        },
+        {
+          "displayName": "Benchmark",
+          "description": "A scene with 729 Material Property Providers, each assigning random colors to two renderers with 3 materials.\nThe use of Material Property Blocks can be forced on to compare performances with material instantiation.",
+          "path": "Samples~/Benchmark"
         }
     ],
     "hideInEditor": false

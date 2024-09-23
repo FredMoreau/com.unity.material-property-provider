@@ -1,0 +1,33 @@
+using UnityEngine;
+using Unity.MaterialPropertyProvider;
+
+#ROOTNAMESPACEBEGIN#
+public class #SCRIPTNAME# : MaterialPropertyProviderBase
+{
+#pragma warning disable CS0414
+    
+    // Use the MaterialProperty("_Reference") attribute on fields and properties.
+    // Supported types are : bool, float, int, Color, Vector2, Vector3, Vector4, Matrix4x4, Texture, Texture2D, Texture3D, Cubemap, and RenderTexture.
+
+    [SerializeField, MaterialProperty("_BaseColor")] Color _color;
+    [SerializeField, Range(0f, 1f), MaterialProperty("_Smoothness")] float _smoothness;
+    
+    [SerializeField] Texture _texture;
+
+    [MaterialProperty("_BaseMap")]
+    Texture Texture => _texture;
+    
+#pragma warning restore CS0414
+    
+    [SerializeField] Renderer[] _renderers;
+    
+    // Override Renderers to provide the renderers to operate on.
+    protected override Renderer[] Renderers => _renderers;
+    
+    private void Update()
+    {
+        // Call UpdateProperties() from Update(), LateUpdate() or any other method if they are driven from code.
+        UpdateProperties();
+    }
+}
+#ROOTNAMESPACEEND#
