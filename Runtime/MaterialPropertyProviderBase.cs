@@ -132,6 +132,22 @@ namespace Unity.MaterialPropertyProvider
             UpdateProperties();
         }
 
+        protected virtual void OnDestroy()
+        {
+            ResetMaterialPropertyBlock();
+        }
+
+        protected virtual void OnEnable()
+        {
+            ResetMaterialPropertyBlock();
+            UpdateProperties();
+        }
+
+        protected virtual void OnDisable()
+        {
+            ResetMaterialPropertyBlock();
+        }
+
         protected virtual void Start()
         {
             if ((!Application.isEditor || Application.isPlaying) && SrpBatcherEnabled && !AlwaysUseMaterialPropertyBlocks)
@@ -150,7 +166,10 @@ namespace Unity.MaterialPropertyProvider
 
         protected virtual void OnValidate()
         {
-            UpdateProperties();
+            if (enabled)
+                UpdateProperties();
+            else
+                ResetMaterialPropertyBlock();
         }
 
         protected virtual void OnDidApplyAnimationProperties()
