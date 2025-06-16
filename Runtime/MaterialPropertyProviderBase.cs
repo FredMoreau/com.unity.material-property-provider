@@ -295,6 +295,24 @@ namespace Unity.MaterialPropertyProvider
                     if (t != null)
                         materialPropertyBlock.SetTexture(nameID, t);
                     break;
+                case float[] fArray:
+                    materialPropertyBlock.SetFloatArray(nameID, fArray);
+                    break;
+                //case Color[] cArray:
+                //    materialPropertyBlock.SetColorArray(nameID, cArray);
+                //    break;
+                case Vector4[] v4Array:
+                    materialPropertyBlock.SetVectorArray(nameID, v4Array);
+                    break;
+                case Matrix4x4[] mArray:
+                    materialPropertyBlock.SetMatrixArray(nameID, mArray);
+                    break;
+                case GraphicsBuffer gBuffer:
+                    materialPropertyBlock.SetBuffer(nameID, gBuffer);
+                    break;
+                case ComputeBuffer cBuffer:
+                    materialPropertyBlock.SetBuffer(nameID, cBuffer);
+                    break;
                 default:
                     break;
             }
@@ -336,6 +354,24 @@ namespace Unity.MaterialPropertyProvider
                     case Texture t:
                         material.SetTexture(nameID, t);
                         break;
+                    case float[] fArray:
+                        material.SetFloatArray(nameID, fArray);
+                        break;
+                    //case Color[] cArray:
+                    //    material.SetColorArray(nameID, cArray);
+                    //    break;
+                    case Vector4[] v4Array:
+                        material.SetVectorArray(nameID, v4Array);
+                        break;
+                    case Matrix4x4[] mArray:
+                        material.SetMatrixArray(nameID, mArray);
+                        break;
+                    case GraphicsBuffer gBuffer:
+                        material.SetBuffer(nameID, gBuffer);
+                        break;
+                    case ComputeBuffer cBuffer:
+                        material.SetBuffer(nameID, cBuffer);
+                        break;
                     default:
                         break;
                 }
@@ -356,7 +392,13 @@ namespace Unity.MaterialPropertyProvider
             typeof(Texture2D),
             typeof(Texture3D),
             typeof(Cubemap),
-            typeof(RenderTexture)
+            typeof(RenderTexture),
+            typeof(float[]),
+            //typeof(Color[]), // we cannot support Color Arrays as MaterialPropertyBlock doesn't have a Set Method for them.
+            typeof(Vector4[]),
+            typeof(Matrix4x4[]),
+            typeof(GraphicsBuffer),
+            typeof(ComputeBuffer)
         };
 
         private static bool IsSupported(Type type, Type declaringType = null)
