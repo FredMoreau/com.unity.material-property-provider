@@ -64,3 +64,6 @@ The component will automatically set the fields' and properties' values in the *
 ![alt text](Documentation~/images/radial-gradient-sg.png)
 
 ![alt text](Documentation~/images/radial-gradient-sg-inspector.png)
+
+## Source Material Change
+Should you change the source material, you can call `material.HasChanged();` on the source to trigger propagation through duplicates.
