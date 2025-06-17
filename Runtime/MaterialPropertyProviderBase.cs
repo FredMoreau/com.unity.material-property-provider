@@ -18,6 +18,8 @@ namespace Unity.MaterialPropertyProvider
     /// </summary>
     public abstract class MaterialPropertyProviderBase : MonoBehaviour
     {
+        internal static Action<Material> hasChanged;
+
         private static Dictionary<Type, Dictionary<int, FieldInfo>> _allFields = new();
         private static Dictionary<Type, Dictionary<int, PropertyInfo>> _allProperties = new();
 
@@ -141,11 +143,21 @@ namespace Unity.MaterialPropertyProvider
         {
             ResetMaterialPropertyBlock();
             UpdateProperties();
+            hasChanged += UpdateFromSourceMaterial;
         }
 
         protected virtual void OnDisable()
         {
             ResetMaterialPropertyBlock();
+            hasChanged -= UpdateFromSourceMaterial;
+        }
+
+        void UpdateFromSourceMaterial(Material material)
+        {
+            if (materials.ContainsKey(material))
+                materials[material].CopyPropertiesFromMaterial(material);
+
+            UpdateProperties();
         }
 
         protected virtual void Start()
