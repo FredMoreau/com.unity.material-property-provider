@@ -152,11 +152,21 @@ namespace Unity.MaterialPropertyProvider
             hasChanged -= UpdateFromSourceMaterial;
         }
 
-        void UpdateFromSourceMaterial(Material material)
+        protected void Revert(Material material)
         {
             if (materials.ContainsKey(material))
                 materials[material].CopyPropertiesFromMaterial(material);
+        }
 
+        protected void RevertAllMaterials()
+        {
+            foreach (KeyValuePair<Material, Material> kvp in materials)
+                kvp.Value.CopyPropertiesFromMaterial(kvp.Key);
+        }
+
+        void UpdateFromSourceMaterial(Material material)
+        {
+            Revert(material);
             UpdateProperties();
         }
 
