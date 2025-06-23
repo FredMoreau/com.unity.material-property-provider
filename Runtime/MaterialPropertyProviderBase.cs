@@ -294,6 +294,9 @@ namespace Unity.MaterialPropertyProvider
                 case int i:
                     materialPropertyBlock.SetInteger(nameID, i);
                     break;
+                case Enum e:
+                    materialPropertyBlock.SetFloat(nameID, Convert.ToSingle(e));
+                    break;
                 case Color c:
                     materialPropertyBlock.SetColor(nameID, c);
                     break;
@@ -354,6 +357,9 @@ namespace Unity.MaterialPropertyProvider
                         break;
                     case int i:
                         material.SetInteger(nameID, i);
+                        break;
+                    case Enum e:
+                        material.SetFloat(nameID, Convert.ToSingle(e));
                         break;
                     case Color c:
                         material.SetColor(nameID, c);
@@ -425,7 +431,7 @@ namespace Unity.MaterialPropertyProvider
 
         private static bool IsSupported(Type type, Type declaringType = null)
         {
-            if (_supportedTypes.Contains(type))
+            if (_supportedTypes.Contains(type) || type.IsEnum)
             {
                 return true;
             }
