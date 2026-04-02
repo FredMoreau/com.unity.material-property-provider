@@ -1,6 +1,6 @@
 {
     "name": "Unity.MaterialPropertyProvider.Editor",
-    "rootNamespace": "Unity.MaterialPropertyProvider.Editor",
+    "rootNamespace": "UnityEditor.MaterialPropertyProvider",
     "references": [
         "Unity.MaterialPropertyProvider"
     ],

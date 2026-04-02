@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.MaterialPropertyProvider
+namespace UnityEngine.MaterialPropertyProvider
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class MaterialPropertyAttribute : Attribute

@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using UnityEngine.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Unity.MaterialPropertyProvider
+namespace UnityEngine.MaterialPropertyProvider
 {
     /// <summary>
     /// A <see cref="MonoBehaviour"/> based class that will automatically set its <see cref="Renderer"/> with a <see cref="MaterialPropertyBlock"/>
@@ -257,11 +256,11 @@ namespace Unity.MaterialPropertyProvider
             {
                 if (_allFields.ContainsKey(type))
                     foreach (var field in _allFields[type])
-                        SetMaterialProperty(field.Key, field.Value.GetValue(this));
+                        materialDuplicates.SetProperty(field.Key, field.Value.GetValue(this));
 
                 if (_allProperties.ContainsKey(type))
                     foreach (var property in _allProperties[type])
-                        SetMaterialProperty(property.Key, property.Value.GetValue(this));
+                        materialDuplicates.SetProperty(property.Key, property.Value.GetValue(this));
             }
             else
             {
@@ -269,140 +268,15 @@ namespace Unity.MaterialPropertyProvider
 
                 if (_allFields.ContainsKey(type))
                     foreach (var field in _allFields[type])
-                        AddToMaterialPropertyBlock(field.Key, field.Value.GetValue(this));
+                        materialPropertyBlock.AddProperty(field.Key, field.Value.GetValue(this));
 
                 if (_allProperties.ContainsKey(type))
                     foreach (var property in _allProperties[type])
-                        AddToMaterialPropertyBlock(property.Key, property.Value.GetValue(this));
+                        materialPropertyBlock.AddProperty(property.Key, property.Value.GetValue(this));
 
                 foreach(var renderer in Renderers)
                     if (renderer != null)
                         renderer.SetPropertyBlock(materialPropertyBlock);
-            }
-        }
-
-        private void AddToMaterialPropertyBlock<V>(int nameID, V value)
-        {
-            switch (value)
-            {
-                case bool b:
-                    materialPropertyBlock.SetFloat(nameID, b ? 1 : 0);
-                    break;
-                case float f:
-                    materialPropertyBlock.SetFloat(nameID, f);
-                    break;
-                case int i:
-                    materialPropertyBlock.SetInteger(nameID, i);
-                    break;
-                case Enum e:
-                    materialPropertyBlock.SetFloat(nameID, Convert.ToSingle(e));
-                    break;
-                case Color c:
-                    materialPropertyBlock.SetColor(nameID, c);
-                    break;
-                case Vector2 v:
-                    materialPropertyBlock.SetVector(nameID, v);
-                    break;
-                case Vector3 v:
-                    materialPropertyBlock.SetVector(nameID, v);
-                    break;
-                case Vector4 v:
-                    materialPropertyBlock.SetVector(nameID, v);
-                    break;
-                case Matrix4x4 m:
-                    materialPropertyBlock.SetMatrix(nameID, m);
-                    break;
-                case RenderTexture rt:
-                    if (rt != null)
-                        materialPropertyBlock.SetTexture(nameID, rt);
-                    break;
-                case Texture t:
-                    if (t != null)
-                        materialPropertyBlock.SetTexture(nameID, t);
-                    break;
-                case float[] fArray:
-                    materialPropertyBlock.SetFloatArray(nameID, fArray);
-                    break;
-                //case Color[] cArray:
-                //    materialPropertyBlock.SetColorArray(nameID, cArray);
-                //    break;
-                case Vector4[] v4Array:
-                    materialPropertyBlock.SetVectorArray(nameID, v4Array);
-                    break;
-                case Matrix4x4[] mArray:
-                    materialPropertyBlock.SetMatrixArray(nameID, mArray);
-                    break;
-                case GraphicsBuffer gBuffer:
-                    materialPropertyBlock.SetBuffer(nameID, gBuffer);
-                    break;
-                case ComputeBuffer cBuffer:
-                    materialPropertyBlock.SetBuffer(nameID, cBuffer);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private void SetMaterialProperty<V>(int nameID, V value)
-        {
-            foreach (var material in materialDuplicates)
-            {
-                switch (value)
-                {
-                    case bool b:
-                        material.SetFloat(nameID, b ? 1 : 0);
-                        break;
-                    case float f:
-                        material.SetFloat(nameID, f);
-                        break;
-                    case int i:
-                        material.SetInteger(nameID, i);
-                        break;
-                    case Enum e:
-                        material.SetFloat(nameID, Convert.ToSingle(e));
-                        break;
-                    case Color c:
-                        material.SetColor(nameID, c);
-                        break;
-                    case Vector2 v:
-                        material.SetVector(nameID, v);
-                        break;
-                    case Vector3 v:
-                        material.SetVector(nameID, v);
-                        break;
-                    case Vector4 v:
-                        material.SetVector(nameID, v);
-                        break;
-                    case Matrix4x4 m:
-                        material.SetMatrix(nameID, m);
-                        break;
-                    case RenderTexture rt:
-                        material.SetTexture(nameID, rt);
-                        break;
-                    case Texture t:
-                        material.SetTexture(nameID, t);
-                        break;
-                    case float[] fArray:
-                        material.SetFloatArray(nameID, fArray);
-                        break;
-                    //case Color[] cArray:
-                    //    material.SetColorArray(nameID, cArray);
-                    //    break;
-                    case Vector4[] v4Array:
-                        material.SetVectorArray(nameID, v4Array);
-                        break;
-                    case Matrix4x4[] mArray:
-                        material.SetMatrixArray(nameID, mArray);
-                        break;
-                    case GraphicsBuffer gBuffer:
-                        material.SetBuffer(nameID, gBuffer);
-                        break;
-                    case ComputeBuffer cBuffer:
-                        material.SetBuffer(nameID, cBuffer);
-                        break;
-                    default:
-                        break;
-                }
             }
         }
 
