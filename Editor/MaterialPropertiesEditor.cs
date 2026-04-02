@@ -1,7 +1,9 @@
-using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.MaterialPropertyProvider;
+using System.Collections.Generic;
+using System;
 using UnityEditorInternal;
+using UnityEngine;
+using UnityEngine.MaterialPropertyProvider;
+using UnityEngine.Rendering;
 
 namespace UnityEditor.MaterialPropertyProvider
 {
@@ -11,11 +13,23 @@ namespace UnityEditor.MaterialPropertyProvider
         SerializedProperty renderersProp;
         SerializedProperty materialPropertiesProp;
         ReorderableList materialPropertiesList;
+        static List<string> dropDownLabels = new();
+        static List<Type> propertyValueTypes = new();
+
+        [InitializeOnLoadMethod]
+        static void ReflectShaderPropertyTypesAndStoreMenuItems()
+        {
+            foreach (ShaderPropertyType type in Enum.GetValues(typeof(ShaderPropertyType)))
+            {
+                propertyValueTypes.Add(IMaterialProperty.FromPropertyType(type, string.Empty).GetType());
+                dropDownLabels.Add(type.ToString());
+            }
+        }
 
         private void OnEnable()
         {
             renderersProp = serializedObject.FindProperty("_renderers");
-            renderersProp = serializedObject.FindProperty("materialProperties");
+            materialPropertiesProp = serializedObject.FindProperty("materialProperties");
             materialPropertiesList = new ReorderableList(serializedObject, materialPropertiesProp, true, true, true, true);
             materialPropertiesList.drawHeaderCallback = (rect) =>
             {
@@ -29,16 +43,18 @@ namespace UnityEditor.MaterialPropertyProvider
             materialPropertiesList.onAddDropdownCallback = (buttonRect, list) =>
             {
                 var menu = new GenericMenu();
-                foreach (ShaderPropertyType type in System.Enum.GetValues(typeof(ShaderPropertyType)))
+                for (int optionIndex = 0; optionIndex < dropDownLabels.Count; optionIndex++)
                 {
-                    menu.AddItem(new GUIContent(type.ToString()), false, () =>
+                    var index = optionIndex; // Capture the current index for the closure
+                    menu.AddItem(new GUIContent(dropDownLabels[optionIndex]), false, () =>
                     {
-                        Undo.RecordObject(target, "Add Renderer Property");
-                        (target as MaterialProperties).Add(IMaterialProperty.FromPropertyType(type, $"New {type} Property"));
-                        //materialPropertiesProp.arraySize++;
-                        //var newElement = materialPropertiesProp.GetArrayElementAtIndex(materialPropertiesProp.arraySize - 1);
-                        //newElement.managedReferenceValue = IMaterialProperty.FromPropertyType(type, $"New {type} Property");
-                        serializedObject.ApplyModifiedProperties();
+                        var prop = Activator.CreateInstance(propertyValueTypes[index]) as IMaterialProperty;
+                        if (prop != null)
+                        {
+                            Undo.RecordObject(target, "Add Renderer Property");
+                            (target as MaterialProperties).Add(prop);
+                            serializedObject.ApplyModifiedProperties();
+                        }
                     });
                 }
                 menu.ShowAsContext();
@@ -48,8 +64,14 @@ namespace UnityEditor.MaterialPropertyProvider
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            EditorGUILayout.PropertyField(renderersProp);
             materialPropertiesList.DoLayoutList();
+            if (materialPropertiesList.index >= 0 && materialPropertiesList.index < materialPropertiesProp.arraySize)
+            {
+                var element = materialPropertiesProp.GetArrayElementAtIndex(materialPropertiesList.index);
+                var nameProp = element.FindPropertyRelative("name");
+                EditorGUILayout.PropertyField(nameProp);
+            }
+            EditorGUILayout.PropertyField(renderersProp);
             serializedObject.ApplyModifiedProperties();
         }
     }
