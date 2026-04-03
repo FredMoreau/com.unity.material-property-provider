@@ -6,6 +6,8 @@ namespace UnityEngine.MaterialPropertyProvider
     internal interface IMaterialProperty
     {
         string Name { get; }
+        bool Enabled { get; set; }
+
         internal static IMaterialProperty FromPropertyType(ShaderPropertyType type, string name)
         {
             switch (type)

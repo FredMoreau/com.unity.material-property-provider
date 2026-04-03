@@ -8,6 +8,9 @@ namespace UnityEngine.MaterialPropertyProvider
         [SerializeField] string name;
         public string Name => name;
 
+        [SerializeField] bool enabled;
+        public bool Enabled { get => enabled; set => enabled = value; }
+
         [SerializeField] T value;
         public T Value { get => value; set => this.value = value; }
 
@@ -21,24 +24,6 @@ namespace UnityEngine.MaterialPropertyProvider
         public MaterialProperty(string name, T value) : this(name)
         {
             this.value = value;
-        }
-    }
-
-    public class FloatRangeProperty : MaterialProperty<float>
-    {
-        [SerializeField] float minValue = 0;
-        [SerializeField] float maxValue = 1;
-
-        public FloatRangeProperty() { }
-
-        public FloatRangeProperty(string name) : base(name)
-        {
-
-        }
-
-        public FloatRangeProperty(string name, float value) : base(name, value)
-        {
-
         }
     }
 }

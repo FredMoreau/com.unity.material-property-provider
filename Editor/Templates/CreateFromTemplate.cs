@@ -6,7 +6,7 @@ namespace UnityEditor.MaterialPropertyProvider
         [MenuItem("Assets/Create/Scripting/Material Property Provider")]
         private static void CreateExample()
         {
-            ProjectWindowUtil.CreateScriptAssetFromTemplateFile("Packages/com.unity.material-property-provider/Editor/example.txt", "NewMaterialPropertyProvider.cs");
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile("Packages/com.unity.material-property-provider/Editor/Templates/example.txt", "NewMaterialPropertyProvider.cs");
         }
     }
 }

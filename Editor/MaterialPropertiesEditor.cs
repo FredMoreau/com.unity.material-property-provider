@@ -12,7 +12,9 @@ namespace UnityEditor.MaterialPropertyProvider
     {
         SerializedProperty renderersProp;
         SerializedProperty materialPropertiesProp;
+        SerializedProperty materialKeywordsProp;
         ReorderableList materialPropertiesList;
+        ReorderableList materialKeywordsList;
         static List<string> dropDownLabels = new();
         static List<Type> propertyValueTypes = new();
 
@@ -29,6 +31,7 @@ namespace UnityEditor.MaterialPropertyProvider
         private void OnEnable()
         {
             renderersProp = serializedObject.FindProperty("_renderers");
+
             materialPropertiesProp = serializedObject.FindProperty("materialProperties");
             materialPropertiesList = new ReorderableList(serializedObject, materialPropertiesProp, true, true, true, true);
             materialPropertiesList.drawHeaderCallback = (rect) =>
@@ -59,6 +62,24 @@ namespace UnityEditor.MaterialPropertyProvider
                 }
                 menu.ShowAsContext();
             };
+
+            materialKeywordsProp = serializedObject.FindProperty("materialKeywords");
+            materialKeywordsList = new ReorderableList(serializedObject, materialKeywordsProp, true, true, true, true);
+            materialKeywordsList.drawHeaderCallback = (rect) =>
+            {
+                EditorGUI.LabelField(rect, "Material Keywords");
+            };
+            materialKeywordsList.drawElementCallback = (rect, index, isActive, isFocused) =>
+            {
+                var element = materialKeywordsProp.GetArrayElementAtIndex(index);
+                EditorGUI.PropertyField(rect, element);
+            };
+            materialKeywordsList.onAddCallback = (list) =>
+            {
+                Undo.RecordObject(target, "Add Renderer Keyword");
+                (target as MaterialProperties).Add(new MaterialKeyword());
+                serializedObject.ApplyModifiedProperties();
+            };
         }
 
         public override void OnInspectorGUI()
@@ -71,6 +92,15 @@ namespace UnityEditor.MaterialPropertyProvider
                 var nameProp = element.FindPropertyRelative("name");
                 EditorGUILayout.PropertyField(nameProp);
             }
+
+            materialKeywordsList.DoLayoutList();
+            if (materialKeywordsList.index >= 0 && materialKeywordsList.index < materialKeywordsProp.arraySize)
+            {
+                var element = materialKeywordsProp.GetArrayElementAtIndex(materialKeywordsList.index);
+                var nameProp = element.FindPropertyRelative("name");
+                EditorGUILayout.PropertyField(nameProp);
+            }
+
             EditorGUILayout.PropertyField(renderersProp);
             serializedObject.ApplyModifiedProperties();
         }

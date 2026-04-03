@@ -101,6 +101,7 @@ namespace UnityEngine.MaterialPropertyProvider
         #endregion
 
         protected abstract void UpdateProperties();
+        protected virtual void UpdateKeywords() { }
 
         private void MakeMaterialsUnique()
         {

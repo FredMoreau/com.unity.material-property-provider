@@ -76,5 +76,19 @@ namespace UnityEngine.MaterialPropertyProvider
                 }
             }
         }
+
+        public static void SetKeywords(this List<Material> materials, List<MaterialKeyword> keywords)
+        {
+            foreach (var material in materials)
+            {
+                foreach (var keyword in keywords)
+                {
+                    if (keyword.Value)
+                        material.EnableKeyword(keyword.Name);
+                    else
+                        material.DisableKeyword(keyword.Name);
+                }
+            }
+        }
     }
 }

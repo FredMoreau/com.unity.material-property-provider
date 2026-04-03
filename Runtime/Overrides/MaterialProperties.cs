@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Properties;
 
 namespace UnityEngine.MaterialPropertyProvider
 {
@@ -12,9 +13,60 @@ namespace UnityEngine.MaterialPropertyProvider
         [SerializeReference]
         List<IMaterialProperty> materialProperties = new();
 
+        [SerializeReference]
+        List<MaterialKeyword> materialKeywords = new();
+
         Dictionary<int, IMaterialProperty> materialPropertyIds = new();
 
         protected override Renderer[] Renderers => _renderers;
+
+        public int Count => materialProperties.Count;
+
+        public bool GetPropertyId(string propertyName, out int propertyId)
+        {
+            propertyId = materialProperties.FindIndex(p => p.Name == propertyName);
+            return propertyId != -1;
+        }
+
+        public void TrySetPropertyEnabled(string propertyName, bool enabled)
+        {
+            if (GetPropertyId(propertyName, out var propertyId))
+            {
+                TrySetPropertyValue(propertyId, enabled);
+            }
+        }
+
+        public void TrySetPropertyEnabled(int propertyId, bool enabled)
+        {
+            var prop = materialPropertyIds[propertyId];
+            if (prop != null)
+            {
+                prop.Enabled = enabled;
+                if (!prop.Enabled)
+                {
+                    RevertAllMaterials();
+                }
+                UpdateProperties();
+            }
+        }
+
+        public void TrySetPropertyValue<T>(string propertyName, T value)
+        {
+            if (GetPropertyId(propertyName, out var propertyId))
+            {
+                TrySetPropertyValue(propertyId, value);
+            }
+        }
+
+        public void TrySetPropertyValue<T>(int propertyId, T value)
+        {
+            var prop = materialPropertyIds[propertyId] as MaterialProperty<T>;
+            if (prop != null)
+            {
+                prop.Value = value;
+                UpdateProperties();
+            }
+        }
 
         internal void Add(IMaterialProperty property)
         {
@@ -25,6 +77,15 @@ namespace UnityEngine.MaterialPropertyProvider
                 if (!materialPropertyIds.ContainsKey(id))
                     materialPropertyIds.Add(id, property);
                 UpdateProperties();
+            }
+        }
+
+        internal void Add(MaterialKeyword keyword)
+        {
+            if (!materialKeywords.Contains(keyword))
+            {
+                materialKeywords.Add(keyword);
+                UpdateKeywords();
             }
         }
 
@@ -77,6 +138,11 @@ namespace UnityEngine.MaterialPropertyProvider
             }
         }
 
+        protected override void UpdateKeywords()
+        {
+
+        }
+
         protected override void UpdateProperties()
         {
             if (Renderers == null || Renderers.Length == 0)
@@ -86,6 +152,8 @@ namespace UnityEngine.MaterialPropertyProvider
             {
                 foreach (var prop in materialPropertyIds)
                 {
+                    if (!prop.Value.Enabled)
+                        continue;
                     switch (prop.Value)
                     {
                         case MaterialProperty<float> floatProp:
@@ -102,6 +170,7 @@ namespace UnityEngine.MaterialPropertyProvider
                             break;
                     }
                 }
+                materialDuplicates.SetKeywords(materialKeywords);
             }
             else
             {
@@ -109,6 +178,8 @@ namespace UnityEngine.MaterialPropertyProvider
 
                 foreach (var prop in materialPropertyIds)
                 {
+                    if (!prop.Value.Enabled)
+                        continue;
                     switch (prop.Value)
                     {
                         case MaterialProperty<float> floatProp:
