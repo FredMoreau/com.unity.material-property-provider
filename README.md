@@ -18,7 +18,7 @@ Supported Types are:
 - bool?, float?, int?, Color?, Vector2?, Vector3?, Vector4?, Matrix4x4?, nullable types are not serializable but will work on properties.
 - Texture, Texture2D, Texture3D, Cubemap, RenderTexture, float[], Vector4[], Matrix4x4[], GraphicsBuffer and ComputeBuffer.
 
-For nullable types, assigning `null` will revert the property to the orinal material's.
+For nullable types, assigning `null` will revert the property to the original material's.
 
 Any other type will issue a warning and just be discarded.
 
