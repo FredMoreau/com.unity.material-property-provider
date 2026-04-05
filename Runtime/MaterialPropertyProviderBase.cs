@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using UnityEngine.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace Unity.MaterialPropertyProvider
+namespace UnityEngine.MaterialPropertyProvider
 {
     /// <summary>
     /// A <see cref="MonoBehaviour"/> based class that will automatically set its <see cref="Renderer"/> with a <see cref="MaterialPropertyBlock"/>
@@ -416,6 +415,13 @@ namespace Unity.MaterialPropertyProvider
             typeof(Vector3),
             typeof(Vector4),
             typeof(Matrix4x4),
+            typeof(bool?),
+            typeof(float?),
+            typeof(int?),
+            typeof(Color?),
+            typeof(Vector2?),
+            typeof(Vector3?),
+            typeof(Vector4?),
             typeof(Texture),
             typeof(Texture2D),
             typeof(Texture3D),

@@ -1,7 +1,6 @@
 using UnityEngine;
-using UnityEditor;
 
-namespace Unity.MaterialPropertyProvider.Editor
+namespace UnityEditor.MaterialPropertyProvider
 {
     public static class CreateFromTemplate
     {

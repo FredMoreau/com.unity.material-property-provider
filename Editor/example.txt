@@ -1,5 +1,5 @@
 using UnityEngine;
-using Unity.MaterialPropertyProvider;
+using UnityEngine.MaterialPropertyProvider;
 
 #ROOTNAMESPACEBEGIN#
     public class #SCRIPTNAME# : MaterialPropertyProviderBase
@@ -9,12 +9,29 @@ using Unity.MaterialPropertyProvider;
         // Use the MaterialProperty("_Reference") attribute on fields and properties.
         /* Supported types are :
         bool, float, int, Color, Vector2, Vector3, Vector4, Matrix4x4,
+        bool?, float?, int?, Color?, Vector2?, Vector3?, Vector4?, Matrix4x4?,
         Texture, Texture2D, Texture3D, Cubemap, RenderTexture,
         float[], Vector4[], Matrix4x4[], GraphicsBuffer, ComputeBuffer.*/
 
-        [SerializeField, MaterialProperty("_BaseColor")] Color _color;
-        [SerializeField, Range(0f, 1f), MaterialProperty("_Smoothness")] float _smoothness;
+        [SerializeField, MaterialProperty("_BaseColor")] Color _color; // use on fields
+
+        [SerializeField]
+        private bool _overrideSmoothness = false;
+
+        [SerializeField, Range(0f, 1f)]
+        private float _smoothness = 0.5f;
     
+        [MaterialProperty("_Smoothness")] // use on properties
+        public float? SmoothnessOverride // use nullable types to support optional overrides
+        {
+            get => _overrideSmoothness ? _smoothness : null;
+            set
+            {
+                if (_overrideSmoothness = value.HasValue)
+                    _smoothness = value.Value;
+            }
+        }
+
         [SerializeField] Texture _texture;
 
         [MaterialProperty("_BaseMap")]

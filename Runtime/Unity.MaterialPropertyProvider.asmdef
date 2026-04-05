@@ -1,6 +1,6 @@
 {
     "name": "Unity.MaterialPropertyProvider",
-    "rootNamespace": "Unity.MaterialPropertyProvider",
+    "rootNamespace": "UnityEngine.MaterialPropertyProvider",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

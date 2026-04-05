@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Unity.MaterialPropertyProvider
+namespace UnityEngine.MaterialPropertyProvider
 {
     public static class MaterialExtensions
     {
