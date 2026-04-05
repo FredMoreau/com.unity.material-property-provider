@@ -13,7 +13,12 @@ A _MonoBehaviour_ based class that will automatically set its _Renderer_'s _Mate
 
 Derive from ```MaterialPropertyProviderBase``` and decorate _Fields_ and _Properties_ with ```[MaterialProperty("_Reference")]``` **Attributes** to add them to the _Material Properties_ that will automatically be handled.
 
-Supported Types are: bool, float, int, Color, Vector2, Vector3, Vector4, Matrix4x4, Texture, Texture2D, Texture3D, Cubemap, RenderTexture, float[], Vector4[], Matrix4x4[], GraphicsBuffer and ComputeBuffer.
+Supported Types are:
+- bool, float, int, Color, Vector2, Vector3, Vector4, Matrix4x4.
+- bool?, float?, int?, Color?, Vector2?, Vector3?, Vector4?, Matrix4x4?, nullable types are not serializable but will work on properties.
+- Texture, Texture2D, Texture3D, Cubemap, RenderTexture, float[], Vector4[], Matrix4x4[], GraphicsBuffer and ComputeBuffer.
+
+For nullable types, assigning `null` will revert the property to the orinal material's.
 
 Any other type will issue a warning and just be discarded.
 
