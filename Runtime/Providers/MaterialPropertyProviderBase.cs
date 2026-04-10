@@ -104,7 +104,7 @@ namespace UnityEngine.MaterialPropertyProvider
         /// <summary>
         /// Updates the <seealso cref="renderer"/>'s properties.
         /// </summary>
-        protected override void UpdateProperties()
+        protected override sealed void UpdateProperties()
         {
             if (Renderers == null || Renderers.Length == 0)
                 return;
@@ -112,24 +112,81 @@ namespace UnityEngine.MaterialPropertyProvider
             if (!AlwaysUseMaterialPropertyBlocks && SrpBatcherEnabled && Application.isPlaying)
             {
                 if (_allFields.ContainsKey(type))
+                {
                     foreach (var field in _allFields[type])
-                        materialDuplicates.SetProperty(field.Key, field.Value.GetValue(this));
+                    {
+
+                        var value = field.Value.GetValue(this);
+                        if (value is IMaterialPropertyOverride overrideValue)
+                        {
+                            if (!overrideValue.Enabled)
+                                continue;
+                            materialDuplicates.SetProperty(field.Key, overrideValue.GetValue());
+                        }
+                        else
+                        {
+                            materialDuplicates.SetProperty(field.Key, value);
+                        }
+                    }
+                }
 
                 if (_allProperties.ContainsKey(type))
+                {
                     foreach (var property in _allProperties[type])
-                        materialDuplicates.SetProperty(property.Key, property.Value.GetValue(this));
+                    {
+                        var value = property.Value.GetValue(this);
+                        if (value is IMaterialPropertyOverride overrideValue)
+                        {
+                            if (!overrideValue.Enabled)
+                                continue;
+                            materialDuplicates.SetProperty(property.Key, overrideValue.GetValue());
+                        }
+                        else
+                        {
+                            materialDuplicates.SetProperty(property.Key, value);
+                        }
+                    }
+                }
             }
             else
             {
                 materialPropertyBlock.Clear();
 
                 if (_allFields.ContainsKey(type))
+                {
                     foreach (var field in _allFields[type])
-                        materialPropertyBlock.AddProperty(field.Key, field.Value.GetValue(this));
+                    {
+                        var value = field.Value.GetValue(this);
+                        if (value is IMaterialPropertyOverride overrideValue)
+                        {
+                            if (!overrideValue.Enabled)
+                                continue;
+                            materialPropertyBlock.AddProperty(field.Key, overrideValue.GetValue());
+                        }
+                        else
+                        {
+                            materialPropertyBlock.AddProperty(field.Key, value);
+                        }
+                    }
+                }
 
                 if (_allProperties.ContainsKey(type))
+                {
                     foreach (var property in _allProperties[type])
-                        materialPropertyBlock.AddProperty(property.Key, property.Value.GetValue(this));
+                    {
+                        var value = property.Value.GetValue(this);
+                        if (value is IMaterialPropertyOverride overrideValue)
+                        {
+                            if (!overrideValue.Enabled)
+                                continue;
+                            materialPropertyBlock.AddProperty(property.Key, overrideValue.GetValue());
+                        }
+                        else
+                        {
+                            materialPropertyBlock.AddProperty(property.Key, value);
+                        }
+                    }
+                }
 
                 foreach(var renderer in Renderers)
                     if (renderer != null)
@@ -139,6 +196,13 @@ namespace UnityEngine.MaterialPropertyProvider
 
         private static List<Type> _supportedTypes = new List<Type>()
         {
+            typeof(bool?),
+            typeof(float?),
+            typeof(int?),
+            typeof(Color?),
+            typeof(Vector2?),
+            typeof(Vector3?),
+            typeof(Vector4?),
             typeof(bool),
             typeof(float),
             typeof(int),
@@ -147,6 +211,7 @@ namespace UnityEngine.MaterialPropertyProvider
             typeof(Vector3),
             typeof(Vector4),
             typeof(Matrix4x4),
+            typeof(Matrix4x4?),
             typeof(Texture),
             typeof(Texture2D),
             typeof(Texture3D),
@@ -162,7 +227,9 @@ namespace UnityEngine.MaterialPropertyProvider
 
         private static bool IsSupported(Type type, Type declaringType = null)
         {
-            if (_supportedTypes.Contains(type) || type.IsEnum)
+            if (typeof(IMaterialPropertyOverride).IsAssignableFrom(type) && _supportedTypes.Contains(type.GenericTypeArguments[0]))
+                return true;
+            else if (_supportedTypes.Contains(type) || type.IsEnum)
             {
                 return true;
             }

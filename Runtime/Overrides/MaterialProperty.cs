@@ -3,16 +3,16 @@ using System;
 namespace UnityEngine.MaterialPropertyProvider
 {
     [Serializable]
-    public class MaterialProperty<T> : IMaterialProperty
+    public class MaterialProperty<T> : IMaterialProperty where T : IMaterialPropertyOverride
     {
         [SerializeField] string name;
         public string Name => name;
 
-        [SerializeField] bool enabled;
-        public bool Enabled { get => enabled; set => enabled = value; }
-
         [SerializeField] T value;
-        public T Value { get => value; set => this.value = value; }
+
+        //public T Value { get => value; set => this.value = value; }
+
+        public object Value => value;
 
         public MaterialProperty() { }
 

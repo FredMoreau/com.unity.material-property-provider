@@ -7,8 +7,47 @@ namespace UnityEngine.MaterialPropertyProvider
     {
         public static void AddProperty<V>(this MaterialPropertyBlock materialPropertyBlock, int nameID, V value)
         {
+            //if (value is IMaterialPropertyOverride overrideValue)
+            //{
+            //    if (!overrideValue.Enabled)
+            //        return;
+            //    value = (V)Convert.ChangeType(overrideValue, overrideValue.ValueType);
+            //}
+
             switch (value)
             {
+                //case MaterialPropertyOverride<bool> overrideBool:
+                //    if (overrideBool.Enabled)
+                //        materialPropertyBlock.SetFloat(nameID, overrideBool.Value ? 1 : 0);
+                //    break;
+                //case MaterialPropertyOverride<float> overrideFloat:
+                //    if (overrideFloat.Enabled)
+                //        materialPropertyBlock.SetFloat(nameID, overrideFloat.Value);
+                //    break;
+                //case MaterialPropertyOverride<int> overrideInt:
+                //    if (overrideInt.Enabled)
+                //        materialPropertyBlock.SetInteger(nameID, overrideInt.Value);
+                //    break;
+                ////case MaterialPropertyOverride<Enum> overrideEnum: // knowing the enum type would require reflection, which is not ideal for performance.
+                ////    if (overrideEnum.HasValue)
+                ////    materialPropertyBlock.SetFloat(nameID, Convert.ToSingle(overrideEnum.Value));
+                ////    break;
+                //case MaterialPropertyOverride<Color> overrideColor:
+                //    if (overrideColor.Enabled)
+                //        materialPropertyBlock.SetColor(nameID, overrideColor.Value);
+                //    break;
+                //case MaterialPropertyOverride<Vector2> overrideVector2:
+                //    if (overrideVector2.Enabled)
+                //        materialPropertyBlock.SetVector(nameID, overrideVector2.Value);
+                //    break;
+                //case MaterialPropertyOverride<Vector3> overrideVector3:
+                //    if (overrideVector3.Enabled)
+                //        materialPropertyBlock.SetVector(nameID, overrideVector3.Value);
+                //    break;
+                //case MaterialPropertyOverride<Vector4> overrideVector4:
+                //    if (overrideVector4.Enabled)
+                //        materialPropertyBlock.SetVector(nameID, overrideVector4.Value);
+                //    break;
                 case bool b:
                     materialPropertyBlock.SetFloat(nameID, b ? 1 : 0);
                     break;
