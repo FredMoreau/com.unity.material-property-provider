@@ -1,5 +1,7 @@
 using System;
 
+//#nullable enable
+
 namespace UnityEngine.MaterialPropertyProvider
 {
     public interface IMaterialPropertyOverride
@@ -9,7 +11,8 @@ namespace UnityEngine.MaterialPropertyProvider
         object GetValue();
     }
 
-    public abstract class MaterialPropertyOverride<T> : IMaterialPropertyOverride
+    [Serializable]
+    public class MaterialPropertyOverride<T> : IMaterialPropertyOverride
     {
         public static string valueFieldName => nameof(value);
         public static string enabledFieldName => nameof(enabled);
@@ -28,10 +31,15 @@ namespace UnityEngine.MaterialPropertyProvider
 
         public Type ValueType => typeof(T);
 
-        public MaterialPropertyOverride(T value = default)
+        public MaterialPropertyOverride()
+        {
+            this.value = default;
+            this.enabled = false;
+        }
+
+        public MaterialPropertyOverride(T value = default) : this()
         {
             this.value = value;
-            this.enabled = false;
         }
 
         public MaterialPropertyOverride(T value = default, bool enabled = true) : this(value)
@@ -39,14 +47,13 @@ namespace UnityEngine.MaterialPropertyProvider
             this.enabled = enabled;
         }
     }
-
+    
     [Serializable]
     public class MaterialPropertyValueOverride<T> : MaterialPropertyOverride<T> where T : struct
     {
-        public MaterialPropertyValueOverride(T value = default) : base(value)
-        {
-            this.enabled = false;
-        }
+        public MaterialPropertyValueOverride() : base() {}
+
+        public MaterialPropertyValueOverride(T value = default) : base(value) {}
 
         public static implicit operator MaterialPropertyValueOverride<T>(T value) => new MaterialPropertyValueOverride<T>(value);
         public static implicit operator T?(MaterialPropertyValueOverride<T> value) => value.Enabled ? value.Value : (T?)null;
@@ -55,10 +62,9 @@ namespace UnityEngine.MaterialPropertyProvider
     [Serializable]
     public class MaterialPropertyReferenceOverride<T> : MaterialPropertyOverride<T> where T : class
     {
-        public MaterialPropertyReferenceOverride(T value = default) : base(value)
-        {
-            this.enabled = false;
-        }
+        public MaterialPropertyReferenceOverride() : base() {}
+
+        public MaterialPropertyReferenceOverride(T value = default) : base(value) {}
 
         public static implicit operator MaterialPropertyReferenceOverride<T>(T value) => new MaterialPropertyReferenceOverride<T>(value);
         public static implicit operator T(MaterialPropertyReferenceOverride<T> value) => value.Enabled ? value.Value : null;

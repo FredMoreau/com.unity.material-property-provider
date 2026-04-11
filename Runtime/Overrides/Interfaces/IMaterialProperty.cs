@@ -14,16 +14,17 @@ namespace UnityEngine.MaterialPropertyProvider
             switch (type)
             {
                 case ShaderPropertyType.Float:
-                case ShaderPropertyType.Range: // TODO : add a specific override for range that also stores the min/max values for editor display
-                    return new MaterialProperty<MaterialPropertyValueOverride<float>>(name);
+                    return new MaterialProperty<float>(name);
+                case ShaderPropertyType.Range:
+                    return new MaterialPropertyRange(name);
                 case ShaderPropertyType.Int:
-                    return new MaterialProperty<MaterialPropertyValueOverride<int>>(name);
+                    return new MaterialProperty<int>(name);
                 case ShaderPropertyType.Color:
-                    return new MaterialProperty<MaterialPropertyValueOverride<Color>>(name);
+                    return new MaterialProperty<Color>(name);
                 case ShaderPropertyType.Vector:
-                    return new MaterialProperty<MaterialPropertyValueOverride<Vector4>>(name);
+                    return new MaterialProperty<Vector4>(name);
                 case ShaderPropertyType.Texture:
-                    return new MaterialProperty<MaterialPropertyReferenceOverride<Texture>>(name);
+                    return new MaterialProperty<Texture>(name);
                 default:
                     throw new ArgumentException($"Unsupported property type {type}");
             }

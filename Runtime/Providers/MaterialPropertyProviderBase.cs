@@ -115,7 +115,6 @@ namespace UnityEngine.MaterialPropertyProvider
                 {
                     foreach (var field in _allFields[type])
                     {
-
                         var value = field.Value.GetValue(this);
                         if (value is IMaterialPropertyOverride overrideValue)
                         {

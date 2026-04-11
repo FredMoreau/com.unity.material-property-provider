@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.Properties;
 
 namespace UnityEngine.MaterialPropertyProvider
 {
@@ -98,12 +97,12 @@ namespace UnityEngine.MaterialPropertyProvider
             {
                 foreach (var material in renderer.sharedMaterials)
                 {
-                    //var props = new IMaterialProperty[material.shader.GetPropertyCount()];
-                    //for (int i = 0; i < props.Length; i++)
-                    //{
-                    //    props[i] = IMaterialProperty.FromPropertyType(material.shader.GetPropertyType(i), material.shader.GetPropertyName(i));
-                    //}
-                    //materialProperties.AddRange(props);
+                    var props = new IMaterialProperty[material.shader.GetPropertyCount()];
+                    for (int i = 0; i < props.Length; i++)
+                    {
+                        props[i] = IMaterialProperty.FromPropertyType(material.shader.GetPropertyType(i), material.shader.GetPropertyName(i));
+                    }
+                    materialProperties.AddRange(props);
                 }
             }
         }
@@ -151,40 +150,39 @@ namespace UnityEngine.MaterialPropertyProvider
 
             if (!AlwaysUseMaterialPropertyBlocks && SrpBatcherEnabled && Application.isPlaying)
             {
+                RevertAllMaterials();
                 foreach (var prop in materialPropertyIds)
                 {
-                    //if (!prop.Value.Enabled)
-                    //    continue;
-                    //switch (prop.Value)
-                    //{
-                    //    case MaterialProperty<bool> boolProp:
-                    //        materialDuplicates.SetProperty(prop.Key, boolProp.Value);
-                    //            break;
-                    //    case FloatRangeProperty floatRangeProperty:
-                    //        materialDuplicates.SetProperty(prop.Key, floatRangeProperty.Value);
-                    //        break;
-                    //    case MaterialProperty<float> floatProp:
-                    //        materialDuplicates.SetProperty(prop.Key, floatProp.Value);
-                    //        break;
-                    //    case MaterialProperty<int> intProp:
-                    //        materialDuplicates.SetProperty(prop.Key, intProp.Value);
-                    //            break;
-                    //    case MaterialProperty<Color> colorProp:
-                    //        materialDuplicates.SetProperty(prop.Key, colorProp.Value);
-                    //        break;
-                    //    case MaterialProperty<Vector2> vector2Prop:
-                    //        materialDuplicates.SetProperty(prop.Key, vector2Prop.Value);
-                    //        break;
-                    //    case MaterialProperty<Vector3> vector3Prop:
-                    //        materialDuplicates.SetProperty(prop.Key, vector3Prop.Value);
-                    //        break;
-                    //    case MaterialProperty<Vector4> vectorProp:
-                    //        materialDuplicates.SetProperty(prop.Key, vectorProp.Value);
-                    //        break;
-                    //    case MaterialProperty<Texture> textureProp:
-                    //        materialDuplicates.SetProperty(prop.Key, textureProp.Value);
-                    //        break;
-                    //}
+                    if (prop.Value.Value == null)
+                        continue;
+
+                    switch (prop.Value.Value)
+                    {
+                        case bool boolProp:
+                            materialDuplicates.SetProperty(prop.Key, boolProp);
+                            break;
+                        case float floatProp:
+                            materialDuplicates.SetProperty(prop.Key, floatProp);
+                            break;
+                        case int intProp:
+                            materialDuplicates.SetProperty(prop.Key, intProp);
+                            break;
+                        case Color colorProp:
+                            materialDuplicates.SetProperty(prop.Key, colorProp);
+                            break;
+                        case Vector2 vector2Prop:
+                            materialDuplicates.SetProperty(prop.Key, vector2Prop);
+                            break;
+                        case Vector3 vector3Prop:
+                            materialDuplicates.SetProperty(prop.Key, vector3Prop);
+                            break;
+                        case Vector4 vector4Prop:
+                            materialDuplicates.SetProperty(prop.Key, vector4Prop);
+                            break;
+                        case Texture textureProp:
+                            materialDuplicates.SetProperty(prop.Key, textureProp);
+                            break;
+                    }
                 }
                 materialDuplicates.SetKeywords(materialKeywords);
             }
@@ -194,37 +192,34 @@ namespace UnityEngine.MaterialPropertyProvider
 
                 foreach (var prop in materialPropertyIds)
                 {
-                    if (!(prop.Value.Value as IMaterialPropertyOverride).Enabled)
+                    if (prop.Value.Value == null)
                         continue;
 
                     switch (prop.Value.Value)
                     {
-                        case MaterialPropertyValueOverride<bool> boolProp:
-                            materialPropertyBlock.AddProperty(prop.Key, boolProp.Value);
+                        case bool boolProp:
+                            materialPropertyBlock.AddProperty(prop.Key, boolProp);
                             break;
-                        //case FloatRangeProperty floatRangeProperty:
-                        //    materialPropertyBlock.AddProperty(prop.Key, floatRangeProperty.Value);
-                        //    break;
-                        case MaterialPropertyValueOverride<float> floatProp:
-                            materialPropertyBlock.AddProperty(prop.Key, floatProp.Value);
+                        case float floatProp:
+                            materialPropertyBlock.AddProperty(prop.Key, floatProp);
                             break;
-                        case MaterialPropertyValueOverride<int> intProp:
-                            materialPropertyBlock.AddProperty(prop.Key, intProp.Value);
+                        case int intProp:
+                            materialPropertyBlock.AddProperty(prop.Key, intProp);
                             break;
-                        case MaterialPropertyValueOverride<Color> colorProp:
-                            materialPropertyBlock.AddProperty(prop.Key, colorProp.Value);
+                        case Color colorProp:
+                            materialPropertyBlock.AddProperty(prop.Key, colorProp);
                             break;
-                        case MaterialPropertyValueOverride<Vector2> vector2Prop:
-                            materialPropertyBlock.AddProperty(prop.Key, vector2Prop.Value);
+                        case Vector2 vector2Prop:
+                            materialPropertyBlock.AddProperty(prop.Key, vector2Prop);
                             break;
-                        case MaterialPropertyValueOverride<Vector3> vector3Prop:
-                            materialPropertyBlock.AddProperty(prop.Key, vector3Prop.Value);
+                        case Vector3 vector3Prop:
+                            materialPropertyBlock.AddProperty(prop.Key, vector3Prop);
                             break;
-                        case MaterialPropertyValueOverride<Vector4> vectorProp:
-                            materialPropertyBlock.AddProperty(prop.Key, vectorProp.Value);
+                        case Vector4 vector4Prop:
+                            materialPropertyBlock.AddProperty(prop.Key, vector4Prop);
                             break;
-                        case MaterialPropertyReferenceOverride<Texture> textureProp:
-                            materialPropertyBlock.AddProperty(prop.Key, textureProp.Value);
+                        case Texture textureProp:
+                            materialPropertyBlock.AddProperty(prop.Key, textureProp);
                             break;
                     }
                 }
