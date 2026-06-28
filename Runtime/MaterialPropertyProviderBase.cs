@@ -87,10 +87,19 @@ namespace UnityEngine.MaterialPropertyProvider
         [RuntimeInitializeOnLoadMethod]
         private static void Init()
         {
-            var types = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+#if UNITY_EDITOR
+            var types = TypeCache.GetTypesDerivedFrom<MaterialPropertyProviderBase>();
+#else
+            var types = (from assembly in 
+#if UNITY_6000_4_OR_NEWER
+            Assemblies.CurrentAssemblies.GetLoadedAssemblies()
+#else
+            AppDomain.CurrentDomain.GetAssemblies()
+#endif
                          from type in assembly.GetTypes()
                          where type.IsSubclassOf(typeof(MaterialPropertyProviderBase))
                          select type).ToList();
+#endif
 
 #if UNITY_EDITOR
             classSources.Clear();
@@ -108,7 +117,25 @@ namespace UnityEngine.MaterialPropertyProvider
             _allFields.Clear();
             _allProperties.Clear();
 
+#if UNITY_EDITOR
+            foreach (var field in TypeCache.GetFieldsWithAttribute<MaterialPropertyAttribute>())
+            {
+                var declaringType = field.DeclaringType;
+                if (IsSupported(field.FieldType, declaringType))
+                    Add(declaringType, field.GetCustomAttribute<MaterialPropertyAttribute>().GetName(), field);
+            }
             foreach (Type type in types)
+            {
+                GatherTypeProperties(type);
+            }
+#else
+            foreach (Type type in types)
+            {
+                GatherTypeFields(type);
+                GatherTypeProperties(type);
+            }
+
+            static void GatherTypeFields(Type type)
             {
                 foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                 {
@@ -117,7 +144,10 @@ namespace UnityEngine.MaterialPropertyProvider
                     if (attrs.Length > 0 && IsSupported(field.FieldType, type))
                         Add(type, attrs[0].GetName(), field);
                 }
-
+            }
+#endif
+            static void GatherTypeProperties(Type type)
+            {
                 foreach (var property in type.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                 {
                     var attrs = (MaterialPropertyAttribute[])property.GetCustomAttributes(typeof(MaterialPropertyAttribute), false);
